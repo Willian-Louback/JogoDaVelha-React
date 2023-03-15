@@ -2,3 +2,19 @@
     display: flex;
     justify-content: center;
 }
+
+.areaTabuleiro{
+    display: flex;
+    justify-content: center;
+}
+
+.tabuleiro{
+    height: 400px;
+    width: 400px;
+    background-color: red;
+}
+
+th{
+    height: 25%;
+    width: 25%;
+}
