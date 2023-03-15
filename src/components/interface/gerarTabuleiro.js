@@ -28,7 +28,9 @@ class Tabuleiro extends React.Component{
         );
     }
 
-    win(){
+    win(player){
+        let playerRef = player; 
+
         const possiveisWin = [
             [1,2,3],
             [4,5,6],
@@ -43,28 +45,31 @@ class Tabuleiro extends React.Component{
         async function validarWin(){
             const preenchido = await document.getElementsByClassName('preenchido');
             let preenchidos = [];
-
+            let preenchidosX = [];
+            let preenchidosY = [];
+            
+            
             for(let i = 0; i < preenchido.length; i++){
                 preenchidos.push(preenchido[i].id);
-                console.log(preenchidos.toString())
-                console.log(possiveisWin[0].toString())
-                if(!preenchidos.toString().indexOf(possiveisWin[0].toString())){
-                    console.log("oi")
+                if(preenchido[i].classList.contains("preenchidoX")){
+                    preenchidosX.push(preenchido[i].id);
+                } else {
+                    preenchidosY.push(preenchido[i].id);
                 }
+            }
 
-                /*if(
-                    !preenchidos.toString().indexOf(possiveisWin[0].toString()) ||
-                    !preenchidos.toString().indexOf(possiveisWin[1].toString()) ||
-                    !preenchidos.toString().indexOf(possiveisWin[2].toString()) ||
-                    !preenchidos.toString().indexOf(possiveisWin[3].toString()) ||
-                    !preenchidos.toString().indexOf(possiveisWin[4].toString()) ||
-                    !preenchidos.toString().indexOf(possiveisWin[5].toString()) ||
-                    !preenchidos.toString().indexOf(possiveisWin[6].toString())||
-                    !preenchidos.toString().indexOf(possiveisWin[7].toString())
-                )
-                {
-                    console.log("Você ganhou");
-                }*/
+            if(
+                preenchidosX.toString().indexOf(possiveisWin[0].toString()) !== -1 || preenchidosY.toString().indexOf(possiveisWin[0].toString()) !== -1 ||
+                preenchidosX.toString().indexOf(possiveisWin[1].toString()) !== -1 || preenchidosY.toString().indexOf(possiveisWin[0].toString()) !== -1 ||
+                preenchidosX.toString().indexOf(possiveisWin[2].toString()) !== -1 || preenchidosY.toString().indexOf(possiveisWin[0].toString()) !== -1 ||
+                preenchidosX.toString().indexOf(possiveisWin[3].toString()) !== -1 || preenchidosY.toString().indexOf(possiveisWin[0].toString()) !== -1 ||
+                preenchidosX.toString().indexOf(possiveisWin[4].toString()) !== -1 || preenchidosY.toString().indexOf(possiveisWin[0].toString()) !== -1 ||
+                preenchidosX.toString().indexOf(possiveisWin[5].toString()) !== -1 || preenchidosY.toString().indexOf(possiveisWin[0].toString()) !== -1 ||
+                preenchidosX.toString().indexOf(possiveisWin[6].toString()) !== -1 || preenchidosY.toString().indexOf(possiveisWin[0].toString()) !== -1 ||
+                preenchidosX.toString().indexOf(possiveisWin[7].toString()) !== -1 || preenchidosY.toString().indexOf(possiveisWin[0].toString()) !== -1 
+            )
+            {
+                console.log("Você ganhou");
             }
         }
 
@@ -81,10 +86,10 @@ class Tabuleiro extends React.Component{
                 if(!document.getElementById(target.toElement.id).classList.contains('preenchido')){
                     document.getElementById(target.toElement.id).innerHTML = player;
                     document.getElementById(target.toElement.id).classList.add('preenchido');
-                    player === 'x' ? document.getElementById(target.toElement.id).classList.add('preenchidoX') : document.getElementById(target.toElement.id).classList.add('preenchidoY');
+                    player === 'X' ? document.getElementById(target.toElement.id).classList.add('preenchidoX') : document.getElementById(target.toElement.id).classList.add('preenchidoY');
                     player === "X" ? player = "O" : player = "X";
                 }
-                thisRef.win();
+                thisRef.win(player);
             })
         }
         validarMoves();
