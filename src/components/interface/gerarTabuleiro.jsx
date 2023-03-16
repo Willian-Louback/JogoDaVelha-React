@@ -1,12 +1,22 @@
 import React from 'react';
 import '../styles/tabuleiro.css';
+let targetRef = "";
+let preenchidos = [];
+let preenchidosX = [];
+let preenchidosY = [];
 
-class Tabuleiro extends React.Component{
+class Tabuleiro extends React.Component{    
+
+    constructor(props){
+        super(props);
+        this.state = {
+            winX: 0,
+            winY: 0
+        }
+    }
+    
 
     gerarTabuleiro(){
-        //const teste = "Oi, boa tarde!";
-
-
         return (
             <thead className="thead">
                 <tr id="tr1">
@@ -28,8 +38,10 @@ class Tabuleiro extends React.Component{
         );
     }
 
-    win(player){
-        let playerRef = player; 
+    win(player, target){
+        const thisRef = this;
+        const playerRef = player; 
+        targetRef = target;
 
         const possiveisWin = [
             [1,2,3],
@@ -41,35 +53,38 @@ class Tabuleiro extends React.Component{
             [2,5,8],
             [3,6,9]
         ]
-        
-        async function validarWin(){
-            const preenchido = await document.getElementsByClassName('preenchido');
-            let preenchidos = [];
-            let preenchidosX = [];
-            let preenchidosY = [];
-            
-            
-            for(let i = 0; i < preenchido.length; i++){
-                preenchidos.push(preenchido[i].id);
-                if(preenchido[i].classList.contains("preenchidoX")){
-                    preenchidosX.push(preenchido[i].id);
-                } else {
-                    preenchidosY.push(preenchido[i].id);
-                }
-            }
 
-            if(
-                preenchidosX.toString().indexOf(possiveisWin[0].toString()) !== -1 || preenchidosY.toString().indexOf(possiveisWin[0].toString()) !== -1 ||
-                preenchidosX.toString().indexOf(possiveisWin[1].toString()) !== -1 || preenchidosY.toString().indexOf(possiveisWin[0].toString()) !== -1 ||
-                preenchidosX.toString().indexOf(possiveisWin[2].toString()) !== -1 || preenchidosY.toString().indexOf(possiveisWin[0].toString()) !== -1 ||
-                preenchidosX.toString().indexOf(possiveisWin[3].toString()) !== -1 || preenchidosY.toString().indexOf(possiveisWin[0].toString()) !== -1 ||
-                preenchidosX.toString().indexOf(possiveisWin[4].toString()) !== -1 || preenchidosY.toString().indexOf(possiveisWin[0].toString()) !== -1 ||
-                preenchidosX.toString().indexOf(possiveisWin[5].toString()) !== -1 || preenchidosY.toString().indexOf(possiveisWin[0].toString()) !== -1 ||
-                preenchidosX.toString().indexOf(possiveisWin[6].toString()) !== -1 || preenchidosY.toString().indexOf(possiveisWin[0].toString()) !== -1 ||
-                preenchidosX.toString().indexOf(possiveisWin[7].toString()) !== -1 || preenchidosY.toString().indexOf(possiveisWin[0].toString()) !== -1 
-            )
-            {
-                console.log("Você ganhou");
+        async function validarWin(){
+            preenchidos.push(parseInt(targetRef.id));
+            
+            for(let i = 0; i < possiveisWin.length; i++){
+                if(targetRef.classList.contains('preenchidoX')){
+                    preenchidosX.push(parseInt(targetRef.id));
+                } else {
+                    preenchidosY.push(parseInt(targetRef.id));
+                }
+                if(
+                    (preenchidosX.indexOf(possiveisWin[i][0]) !== -1 &&
+                    preenchidosX.indexOf(possiveisWin[i][1]) !== -1 &&
+                    preenchidosX.indexOf(possiveisWin[i][2]) !== -1) ||
+                    (preenchidosY.indexOf(possiveisWin[i][0]) !== -1 &&
+                    preenchidosY.indexOf(possiveisWin[i][1]) !== -1 &&
+                    preenchidosY.indexOf(possiveisWin[i][2]) !== -1)
+                )
+                {
+                    console.log(`Você ganhou ${playerRef}`);
+                    if(playerRef === "X"){
+                        thisRef.setState({ winX: this.state.winX + 1 });
+                        console.log('passou')
+                    } else {
+                        thisRef.setState({ winY: this.state.winY + 1 });
+                    }
+                    //document.getElementById('resultado').innerHTML = `Resultado${playerRef}`
+                    const th = document.getElementsByTagName('th');
+                    Array.from(th).forEach((valor, indice) => {
+                        th[indice].classList.add('preenchido');
+                    })
+                }
             }
         }
 
@@ -87,9 +102,9 @@ class Tabuleiro extends React.Component{
                     document.getElementById(target.toElement.id).innerHTML = player;
                     document.getElementById(target.toElement.id).classList.add('preenchido');
                     player === 'X' ? document.getElementById(target.toElement.id).classList.add('preenchidoX') : document.getElementById(target.toElement.id).classList.add('preenchidoY');
+                    thisRef.win(player, target.toElement);
                     player === "X" ? player = "O" : player = "X";
                 }
-                thisRef.win(player);
             })
         }
         validarMoves();
@@ -103,6 +118,7 @@ class Tabuleiro extends React.Component{
                     {this.gerarTabuleiro()}
                     {this.moves()}
                 </table>
+                <span id="resultado">Resultado: {this.state.winX} x {this.state.winY}.</span>
             </div>
         )
     }
