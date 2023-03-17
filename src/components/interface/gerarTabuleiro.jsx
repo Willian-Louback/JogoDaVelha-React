@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../styles/tabuleiro.css';
 let targetRef = "";
 let preenchidos = [];
 let preenchidosX = [];
 let preenchidosY = [];
+const th = document.getElementsByTagName('th');
 
 class Tabuleiro extends React.Component{    
 
@@ -53,6 +54,7 @@ class Tabuleiro extends React.Component{
             [2,5,8],
             [3,6,9]
         ]
+        
 
         async function validarWin(){
             preenchidos.push(parseInt(targetRef.id));
@@ -74,13 +76,12 @@ class Tabuleiro extends React.Component{
                 {
                     console.log(`Você ganhou ${playerRef}`);
                     if(playerRef === "X"){
-                        thisRef.setState({ winX: this.state.winX + 1 });
+                        thisRef.setState({winX: thisRef.state.winX + 1})
                         console.log('passou')
                     } else {
-                        thisRef.setState({ winY: this.state.winY + 1 });
+                        thisRef.setState({winY: thisRef.state.winY + 1})
                     }
                     //document.getElementById('resultado').innerHTML = `Resultado${playerRef}`
-                    const th = document.getElementsByTagName('th');
                     Array.from(th).forEach((valor, indice) => {
                         th[indice].classList.add('preenchido');
                     })
@@ -110,6 +111,26 @@ class Tabuleiro extends React.Component{
         validarMoves();
     }
 
+    reiniciarJogo(){
+        async function renderizarClasses(){
+            const preenchidosX = await document.getElementsByClassName('preenchidoX');
+
+            Array.from(th).forEach((valor, indice) => {
+                th[indice].classList.remove('preenchido');
+                th[indice].innerHTML = "";
+            });
+            Array.from(preenchidosX).forEach((valor, indice) => {
+                preenchidosX[indice].classList.remove('preenchidoX');
+                /*if(indice > 0){
+                    console.log(indice)
+                    document.getElementsByClassName('preenchidoY')[indice-1].classList.remove('preenchidoY');
+                }*/
+            })
+        }
+
+        renderizarClasses();
+    }
+
     render(){
 
         return(
@@ -119,6 +140,7 @@ class Tabuleiro extends React.Component{
                     {this.moves()}
                 </table>
                 <span id="resultado">Resultado: {this.state.winX} x {this.state.winY}.</span>
+                <button onClick={this.reiniciarJogo}>Reiniciar</button>
             </div>
         )
     }
