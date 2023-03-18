@@ -106,18 +106,20 @@ export default class Tabuleiro extends React.Component{
     moves(){
         const thisRef = this; //fazer referencia ao this para poder usar na function
         async function validarMoves(){
-            const tabuleiro = await document.getElementsByClassName('tabuleiro');
+            const tabuleiro = await document.getElementsByTagName('th');
 
-            tabuleiro[0].addEventListener('mousedown', function resposta(targetRef){
-                if(!document.getElementById(targetRef.toElement.id).classList.contains('preenchido')){
-                    document.getElementById(targetRef.toElement.id).classList.add('preenchido');
-                    thisRef.state.player === 'X' ? document.getElementById(targetRef.toElement.id).classList.add('preenchidoX') : document.getElementById(targetRef.toElement.id).classList.add('preenchidoY');
-                    document.getElementById(targetRef.toElement.id).innerHTML = thisRef.state.player;
-                    thisRef.state.target = targetRef.toElement;
-                    thisRef.win();
-                    thisRef.state.player === "X" ? thisRef.state.player = "O" : thisRef.state.player = "X";
-                }
-            })
+            for(let i = 0; i < tabuleiro.length; i++){
+                tabuleiro[i].addEventListener('mousedown', function resposta(targetRef){
+                    if(!document.getElementById(targetRef.toElement.id).classList.contains('preenchido')){
+                        document.getElementById(targetRef.toElement.id).classList.add('preenchido');
+                        thisRef.state.player === 'X' ? document.getElementById(targetRef.toElement.id).classList.add('preenchidoX') : document.getElementById(targetRef.toElement.id).classList.add('preenchidoY');
+                        document.getElementById(targetRef.toElement.id).innerHTML = thisRef.state.player;
+                        thisRef.state.target = targetRef.toElement;
+                        thisRef.win();
+                        thisRef.state.player === "X" ? thisRef.state.player = "O" : thisRef.state.player = "X";
+                    }
+                })
+            }
         }
         validarMoves();
     }

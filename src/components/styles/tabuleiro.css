@@ -5,7 +5,7 @@
 }
 
 .areaTabuleiro{
-    background-color: cyan;
+    /*background-color: cyan;*/
 }
 
 .tabuleiro{
@@ -16,9 +16,10 @@
 }
 
 th{
-    height: 25%;
-    width: 25%;
+    height: calc(100% / 3);
+    width: calc(100% / 3);
     font-size: 40px;
+    box-sizing: border-box;
     transition: all 0.5s ease-in-out;
 }
 
