@@ -144,12 +144,14 @@ export default class Tabuleiro extends React.Component{
     reiniciarJogo(){
         const { cells } = this.state;
 
-        this.setState({
-            preenchidosX: [],
-            preenchidosY: [],
-            target: "",
-            player: "X"
-        })
+        this.setState(
+            () => (
+            { preenchidosX: [],
+              preenchidosY: [],
+              target: "",
+              player: "X" } 
+            )
+        )
         
 
         Array.from(cells).forEach(cells => {
