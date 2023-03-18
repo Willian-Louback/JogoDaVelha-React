@@ -184,7 +184,3 @@ export default class Tabuleiro extends React.Component{
         )
     }
 }
-
-/*<div className="dados">
-                    <Dados winX={this.state.winX} winY={this.state.winY} reiniciarJogo={this.reiniciarJogo}/>
-                </div>*/
