@@ -11,7 +11,7 @@ export default class Tabuleiro extends React.Component{
         this.state = {
             winX: 0,
             winY: 0,
-            th: [],
+            cells: [],
             preenchidosX: [],
             preenchidosY: [],
             target: "",
@@ -21,29 +21,23 @@ export default class Tabuleiro extends React.Component{
     }
 
     componentDidMount() {
-        const th = document.getElementsByTagName("th");
-        this.setState({ th });
+        const cells = document.getElementsByClassName('cells')
+        this.setState({ cells });
     }
 
     gerarTabuleiro(){
         return (
-            <thead className="thead">
-                <tr id="tr1">
-                    <th id='1'></th>
-                    <th id='2'></th>
-                    <th id='3'></th>
-                </tr>
-                <tr id="tr2">
-                    <th id='4'></th>
-                    <th id='5'></th>
-                    <th id='6'></th>
-                </tr>
-                <tr id="tr3">
-                    <th id='7'></th>
-                    <th id='8'></th>
-                    <th id='9'></th>
-                </tr>
-            </thead>
+            <div className='grid'> 
+                <div className="cells" id='1'></div>
+                <div className="cells" id='2'></div>
+                <div className="cells" id='3'></div>
+                <div className="cells" id='4'></div>
+                <div className="cells" id='5'></div>
+                <div className="cells" id='6'></div>
+                <div className="cells" id='7'></div>
+                <div className="cells" id='8'></div>
+                <div className="cells" id='9'></div>
+            </div>
         );
     }
 
@@ -93,7 +87,7 @@ export default class Tabuleiro extends React.Component{
                         thisRef.atualizarWin("Y", win1, win2, win3);
                     }
                     
-                    Array.from(thisRef.state.th).forEach(valor => {
+                    Array.from(thisRef.state.cells).forEach(valor => {
                         valor.classList.add('preenchido');
                     })
                 }
@@ -106,7 +100,7 @@ export default class Tabuleiro extends React.Component{
     moves(){
         const thisRef = this; //fazer referencia ao this para poder usar na function
         async function validarMoves(){
-            const tabuleiro = await document.getElementsByTagName('th');
+            const tabuleiro = await document.getElementsByClassName('cells');
 
             for(let i = 0; i < tabuleiro.length; i++){
                 tabuleiro[i].addEventListener('mousedown', function resposta(targetRef){
@@ -127,7 +121,7 @@ export default class Tabuleiro extends React.Component{
     atualizarWin(X, win1, win2, win3){
         const winA = [win1, win2, win3];
         for(let i = 0; i < winA.length; i++){
-            this.state.th[winA[i]-1].classList.add('win');
+            this.state.cells[winA[i]-1].classList.add('win');
         }
         
         if(X === "X"){
@@ -148,7 +142,7 @@ export default class Tabuleiro extends React.Component{
     }
 
     reiniciarJogo(){
-        const { th } = this.state;
+        const { cells } = this.state;
 
         this.setState({
             preenchidosX: [],
@@ -158,12 +152,12 @@ export default class Tabuleiro extends React.Component{
         })
         
 
-        Array.from(th).forEach(th => {
-            th.classList.remove('preenchido');
-            th.innerHTML = "";
-            th.classList.remove('preenchidoX');
-            th.classList.remove('preenchidoY');
-            th.classList.remove('win');
+        Array.from(cells).forEach(cells => {
+            cells.classList.remove('preenchido');
+            cells.innerHTML = "";
+            cells.classList.remove('preenchidoX');
+            cells.classList.remove('preenchidoY');
+            cells.classList.remove('win');
         });
 
     }
@@ -174,10 +168,10 @@ export default class Tabuleiro extends React.Component{
             <>
                 <div className='areaTotal'>
                     <div className="areaTabuleiro">
-                        <table className="tabuleiro">
+                        <div className="tabuleiro">
                             {this.gerarTabuleiro()}
                             {this.moves()}
-                        </table>
+                        </div>
                     </div>
                     <Dados winX={this.state.winX} winY={this.state.winY} />
                 </div>
