@@ -1,7 +1,11 @@
-.areaTabuleiro{
+.areaTotal{
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
+}
+
+.areaTabuleiro{
+    background-color: cyan;
 }
 
 .tabuleiro{
@@ -28,4 +32,9 @@ th:hover{
 
 .preenchidoY{
     color: blue;
+}
+
+.win{
+    background-color: #121111;
+    color: yellow;
 }

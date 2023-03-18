@@ -1,21 +1,21 @@
 import React from 'react';
 import '../styles/tabuleiro.css';
 import Dados from './dados';
+import Button from './button';
 
 export default class Tabuleiro extends React.Component{    
 
     constructor(props){
         super(props);
-        this.targetRef = "";
         this.preenchidos = [];
-        this.player = "X";
-        //this.th = document.getElementsByTagName('th');
         this.state = {
             winX: 0,
             winY: 0,
             th: [],
             preenchidosX: [],
-            preenchidosY: []
+            preenchidosY: [],
+            target: "",
+            player: "X"
         }
         this.reiniciarJogo = this.reiniciarJogo.bind(this);
     }
@@ -47,9 +47,8 @@ export default class Tabuleiro extends React.Component{
         );
     }
 
-    win(target){
+    win(){
         const thisRef = this;
-        this.targetRef = target;
 
         const possiveisWin = [
             [1,2,3],
@@ -63,16 +62,16 @@ export default class Tabuleiro extends React.Component{
         ]
 
         async function validarWin(){
-            thisRef.preenchidos.push(parseInt(thisRef.targetRef.id));
+            thisRef.preenchidos.push(parseInt(thisRef.state.target.id));
             
             for(let i = 0; i < possiveisWin.length; i++){
-                if(thisRef.targetRef.classList.contains('preenchidoX')){
+                if(thisRef.state.target.classList.contains('preenchidoX')){
                     await thisRef.setState(prevState => ({
-                        preenchidosX: [...prevState.preenchidosX, parseInt(thisRef.targetRef.id)]
+                        preenchidosX: [...prevState.preenchidosX, parseInt(thisRef.state.target.id)]
                     }));
                 } else {
                     await thisRef.setState(prevState => ({
-                        preenchidosY: [...prevState.preenchidosY, parseInt(thisRef.targetRef.id)]
+                        preenchidosY: [...prevState.preenchidosY, parseInt(thisRef.state.target.id)]
                     }));
                 }
                 if(
@@ -84,10 +83,14 @@ export default class Tabuleiro extends React.Component{
                     thisRef.state.preenchidosY.indexOf(possiveisWin[i][2]) !== -1)
                 )
                 {
-                    if(thisRef.player !== "X"){ //Está trocado, mas funcinonando corretamente, arrumar depois
-                        thisRef.atualizarWin("X");
+                    const win1 = possiveisWin[i][0];
+                    const win2 = possiveisWin[i][1];
+                    const win3 = possiveisWin[i][2];
+                    
+                    if(thisRef.state.player !== "X"){ //Está trocado, mas funcinonando corretamente, arrumar depois
+                        thisRef.atualizarWin("X", win1, win2, win3);
                     } else {
-                        thisRef.atualizarWin("Y");
+                        thisRef.atualizarWin("Y", win1, win2, win3);
                     }
                     
                     Array.from(thisRef.state.th).forEach(valor => {
@@ -105,20 +108,26 @@ export default class Tabuleiro extends React.Component{
         async function validarMoves(){
             const tabuleiro = await document.getElementsByClassName('tabuleiro');
 
-            tabuleiro[0].addEventListener('mousedown', function resposta(target){
-                if(!document.getElementById(target.toElement.id).classList.contains('preenchido')){
-                    document.getElementById(target.toElement.id).classList.add('preenchido');
-                    thisRef.player === 'X' ? document.getElementById(target.toElement.id).classList.add('preenchidoX') : document.getElementById(target.toElement.id).classList.add('preenchidoY');
-                    document.getElementById(target.toElement.id).innerHTML = thisRef.player;
-                    thisRef.win( target.toElement);
-                    thisRef.player === "X" ? thisRef.player = "O" : thisRef.player = "X";
+            tabuleiro[0].addEventListener('mousedown', function resposta(targetRef){
+                if(!document.getElementById(targetRef.toElement.id).classList.contains('preenchido')){
+                    document.getElementById(targetRef.toElement.id).classList.add('preenchido');
+                    thisRef.state.player === 'X' ? document.getElementById(targetRef.toElement.id).classList.add('preenchidoX') : document.getElementById(targetRef.toElement.id).classList.add('preenchidoY');
+                    document.getElementById(targetRef.toElement.id).innerHTML = thisRef.state.player;
+                    thisRef.state.target = targetRef.toElement;
+                    thisRef.win();
+                    thisRef.state.player === "X" ? thisRef.state.player = "O" : thisRef.state.player = "X";
                 }
             })
         }
         validarMoves();
     }
     
-    atualizarWin(X){
+    atualizarWin(X, win1, win2, win3){
+        const winA = [win1, win2, win3];
+        for(let i = 0; i < winA.length; i++){
+            this.state.th[winA[i]-1].classList.add('win');
+        }
+        
         if(X === "X"){
             this.setState(
                 (state)=>(
@@ -134,10 +143,6 @@ export default class Tabuleiro extends React.Component{
             )
             document.getElementById('resultadoAtual').innerHTML = `Resultado: A "O" ganhou!`;
         }
-        return {
-            winX: this.state.winX + (X === "X" ? 1 : 0),
-            winY: this.state.winY + (X === "X" ? 0 : 1)
-        }
     }
 
     reiniciarJogo(){
@@ -145,44 +150,41 @@ export default class Tabuleiro extends React.Component{
 
         this.setState({
             preenchidosX: [],
-            preenchidosY: [] 
+            preenchidosY: [],
+            target: "",
+            player: "X"
         })
         
 
-        Array.from(th).forEach((th, indice) => {
+        Array.from(th).forEach(th => {
             th.classList.remove('preenchido');
             th.innerHTML = "";
-
-            if(indice % 2 === 0){
-                th.classList.remove('preenchidoX');
-            } else {
-                th.classList.remove('preenchidoY');
-            }
+            th.classList.remove('preenchidoX');
+            th.classList.remove('preenchidoY');
+            th.classList.remove('win');
         });
 
-        
-        this.player = "X";
     }
 
     render(){
 
         return(
             <>
-                <div className='areaTabuleiro'>
-                    <table className="tabuleiro">
-                        {this.gerarTabuleiro()}
-                        {this.moves()}
-                    </table>
+                <div className='areaTotal'>
+                    <div className="areaTabuleiro">
+                        <table className="tabuleiro">
+                            {this.gerarTabuleiro()}
+                            {this.moves()}
+                        </table>
+                    </div>
+                    <Dados winX={this.state.winX} winY={this.state.winY} />
                 </div>
-                <div className="dados">
-                    <Dados winX={this.state.winX} winY={this.state.winY} reiniciarJogo={this.reiniciarJogo}/>
-                </div>
+                <Button reiniciarJogo={this.reiniciarJogo} />
             </>
         )
     }
 }
 
-/*<Dados winX={this.state.winX} />
-                <span id="resultadoAtual">Resultado: NaN.</span>
-                <span id="historico">Histórico: {this.state.winX} x {this.state.winY}.</span>
-                <button onClick={this.reiniciarJogo}>Reiniciar</button> */
+/*<div className="dados">
+                    <Dados winX={this.state.winX} winY={this.state.winY} reiniciarJogo={this.reiniciarJogo}/>
+                </div>*/

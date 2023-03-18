@@ -5,7 +5,7 @@ import BoasVindas from './components/scripts/boasVindas';
 function App(){
   return(
     <>
-      <BoasVindas nome="Willian"/>
+      <BoasVindas nome="Jogador"/>
       <Tabuleiro />
     </>
   )

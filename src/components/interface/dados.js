@@ -1,11 +1,12 @@
 import '../styles/dados.css'
 
-const Dados = ({winX, winY, reiniciarJogo}) => {
+const Dados = ({winX, winY}) => {
     return(
     <>
-        <span id="resultadoAtual">Resultado: NaN.</span>
-        <span id="historico">Histórico: {winX} x {winY}.</span>
-        <button onClick={reiniciarJogo}>Reiniciar</button>
+        <div className="dados">
+            <span id="resultadoAtual">Resultado: NaN.</span>
+            <span id="historico">Histórico: {winX} x {winY}.</span>
+        </div>
     </>
     )
 }
